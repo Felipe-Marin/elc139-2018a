@@ -3,23 +3,22 @@
 TOP500 & me: Comparativo de Arquiteturas Paralelas
 --------------------------------------------------
 
-Nome: < preencha seu nome aqui >
+Nome: Felipe Marin
 
 | Característica                                            | Computador no TOP500  | Meu computador  |
 | --------------------------------------------------------- | --------------------- | --------------- |
-| Nome/Título                                               |                       |                 |
-| Imagem (foto, diagrama, screenshot, etc.)                 | Substitua-me. <img src="http://www.top500.org/static//images/Top500_logo.png" width="48"> | Substitua-me. <img src="http://www.top500.org/static//images/Top500_logo.png" width="48">|
-| Classificação de Flynn                                    |                       |                 |
-| Memória: compartilhada, distribuída ou ambas?             |                       |                 |
-| Número total de núcleos de processamento                  |                       |                 |
-| Fabricante e modelo do(s) processador(es)                 |                       |                 |
-| Frequência do(s) processador(es)                          |                       |                 |
-| Memória total                                             |                       |                 |
-| Tipo(s) de interconexão entre os núcleos/processadores    |                       |                 |
-| Desempenho Linpack                                        |                       |                 |
+| Nome/Título                                               |NVIDIA DGX Saturn V    |                 |
+| Imagem (foto, diagrama, screenshot, etc.)                 |<img src="https://3s81si1s5ygj3mzby34dq6qf-wpengine.netdna-ssl.com/wp-content/uploads/2016/10/DGX_SaturnV.jpg" width="300"> ||
+| Classificação de Flynn                                    |SIMD                   | MIMD            |
+| Memória: compartilhada, distribuída ou ambas?             |Compartilhada          | Compartilhada   |
+| Número total de núcleos de processamento                  |60,512                 | 4               |
+| Fabricante e modelo do(s) processador(es)                 |Intel Xeon E5-2698v4, NVIDIA Tesla P100|Intel® Core™ i5-4670K|
+| Frequência do(s) processador(es)                          |2.2GHz                 |3.8GHz           |
+| Memória total                                             |63488 GB               |16 GB            |
+| Tipo(s) de interconexão entre os núcleos/processadores    |Infiniband EDR         |                 |
+| Desempenho Linpack                                        |3307 TFlop/s           |110 GFlop/s      |
 
 ### Referências
-- Autor (nome de pessoa ou instituição). Título. URL.
-- Autor (nome de pessoa ou instituição). Título. URL.
-- Autor (nome de pessoa ou instituição). Título. URL.
-- ...
+- TOP500. DGX Saturn V TOP500. <a href="https://www.top500.org/system/178928">https://www.top500.org/system/178928</a>.
+- NVIDIA. DGX Saturn V Supercomputer for AI and Deep Learning. <a href="https://www.nvidia.com/en-us/data-center/dgx-saturnv/">https://www.nvidia.com/en-us/data-center/dgx-saturnv/</a>.
+- Intel. Especificações do produto Intel® Core™ i5-4670K Processor. <a href="https://ark.intel.com/pt-br/products/75048/Intel-Core-i5-4670K-Processor-6M-Cache-up-to-3_80-GHz">https://ark.intel.com/pt-br/products/75048/Intel-Core-i5-4670K-Processor-6M-Cache-up-to-3_80-GHz</a>.
