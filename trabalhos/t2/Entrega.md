@@ -27,7 +27,7 @@ A função dot_product poderia ser paralelizada, a multiplicação dos valores n
 
 ## Parte 2
 ### Programa
-O programa escolhido é um [gerador de planilhas](/python_profiler/genspreadsheet.py) escrito em Python. Ele recebe como parâmetro o número linhas, colunas e tamanho das células, gerando um arquivo no formato XLSX com os dados da planilha. O script pode ser usado através do terminal, o exemplo a seguir gerará uma planilha com 10000 linhas, 200 colunas e células com 100 caracteres:
+O programa escolhido é um [gerador de planilhas](/trabalhos/t2/python_profiler/genspreadsheet.py) escrito em Python. Ele recebe como parâmetro o número linhas, colunas e tamanho das células, gerando um arquivo no formato XLSX com os dados da planilha. O script pode ser usado através do terminal, o exemplo a seguir gerará uma planilha com 10000 linhas, 200 colunas e células com 100 caracteres:
 
    ```
    python genspreadsheet.py 10000 200 100
