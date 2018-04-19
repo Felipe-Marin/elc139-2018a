@@ -49,11 +49,19 @@ public:
       mutex = usemutex;
    }
    void fillArrayConcurrently() {
-      #pragma omp parallel for schedule(auto)
-      for (int i = 0; i < nTimes*nThreads; i++) {
-         #pragma omp critical
-         array->addChar('A'+omp_get_thread_num());
+      if(mutex){
+         #pragma omp parallel for schedule(auto)
+         for (int i = 0; i < nTimes*nThreads; i++) {
+            #pragma omp critical
+            array->addChar('A'+omp_get_thread_num());
+         }
+      }else{
+         #pragma omp parallel for schedule(auto)
+         for (int i = 0; i < nTimes*nThreads; i++) {
+            array->addChar('A'+omp_get_thread_num());
+         }
       }
+      
    }
    void printStats() {
       std::cout << array->toString() << std::endl;
