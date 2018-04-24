@@ -1,9 +1,7 @@
 #include "Forest.h"
-#include <omp.h>
 
-Forest::Forest(int s, int nthreads) : size(s), nthreads(nthreads) 
+Forest::Forest(int s) : size(s) 
 {
-   omp_set_num_threads(nthreads);
    t = new Tree*[size];
    for (int i = 0; i < size; i++)
       t[i] = new Tree[size];
@@ -32,7 +30,7 @@ Forest::burnUntilOut(TreePosn start_tree, double prob_spread, Random& r)
    grow();
    lightTree(start_tree);
 
-   // queima a floresta atï¿½ terminar o fogo
+   // queima a floresta até terminar o fogo
    count = 0;
    while (isBurning()) {
       burn(prob_spread, r);
@@ -47,56 +45,51 @@ Forest::getPercentBurned()
 {
    int total = size*size-1;
    int sum = 0;
-   int i, j;
-   // calcula quantidade de ï¿½rvores queimadas
-   #pragma omp parallel for schedule(static) shared(sum) private(i, j)
-   for (i = 0; i < size; i++) {
-      for (j = 0; j < size; j++) {
+
+   // calcula quantidade de árvores queimadas
+   for (int i = 0; i < size; i++) {
+      for (int j = 0; j < size; j++) {
          if (t[i][j] == Burnt) {
-            #pragma omp critical
             sum++;
          }
       }
    }
-   // retorna percentual de ï¿½rvores queimadas
+   // retorna percentual de árvores queimadas
    return ((double)(sum-1)/(double)total);
 }
 
 void 
 Forest::burn(double prob_spread, Random& r) 
 {
-   int i, j;
-   #pragma omp parallel for schedule(static) private(i, j)
-   for (i = 0; i < size; i++) {
-      for (j = 0; j < size; j++) {
-         if (t[i][j] == Burning) // ï¿½rvores pegando fogo
+   for (int i = 0; i < size; i++) {
+      for (int j = 0; j < size; j++) {
+         if (t[i][j] == Burning) // árvores pegando fogo
             t[i][j] = Burnt;     // ficam completamente queimadas
-         if (t[i][j] == Smoldering) // ï¿½rvores comeï¿½ando a pegar fogo
+         if (t[i][j] == Smoldering) // árvores começando a pegar fogo
             t[i][j] = Burning;      // ficam queimando
       }
    }
 
-   // ï¿½rvores nï¿½o queimadas comeï¿½am a pegar fogo
-   #pragma omp parallel for schedule(static) private(i,j)
-   for (i = 0;  i < size; i++) {
-      for (j = 0; j < size; j++) {
+   // árvores não queimadas começam a pegar fogo
+   for (int i = 0;  i < size; i++) {
+      for (int j = 0; j < size; j++) {
          if (t[i][j] == Burning) {
-            if (i != 0) { // ï¿½rvore ao norte
+            if (i != 0) { // árvore ao norte
                if (t[i-1][j] == Unburnt && fireSpreads(prob_spread, r)) {
                   t[i-1][j] = Smoldering;
                }
             }
-            if (i != size-1) { // ï¿½rvore ao sul
+            if (i != size-1) { // árvore ao sul
                if (t[i+1][j] == Unburnt && fireSpreads(prob_spread, r)) {
                   t[i+1][j] = Smoldering;
                }
             }
-            if (j != 0) { // ï¿½rvore a oeste
+            if (j != 0) { // árvore a oeste
                if (t[i][j-1] == Unburnt && fireSpreads(prob_spread, r)) {
                   t[i][j-1] = Smoldering;
                }
             }
-            if (j != size-1) { // ï¿½rvore a leste
+            if (j != size-1) { // árvore a leste
                if (t[i][j+1] == Unburnt && fireSpreads(prob_spread, r)) {
                   t[i][j+1] = Smoldering;
                }
@@ -109,10 +102,8 @@ Forest::burn(double prob_spread, Random& r)
 void 
 Forest::grow()
 {
-   int i, j;
-   #pragma omp parallel for schedule(static) private(i, j)
-   for (i = 0; i < size; i++)
-      for (j = 0; j < size; j++)
+   for (int i = 0; i < size; i++)
+      for (int j = 0; j < size; j++)
          t[i][j] = Unburnt;
 }
 
@@ -125,18 +116,14 @@ Forest::lightTree(TreePosn p)
 bool
 Forest::isBurning()
 {
-   int i, j;
-   bool isBurningOrSmoldering = false;
-   #pragma omp parallel for schedule(static) private(i, j)
-   for (i = 0; i < size; i++) {
-      for (j = 0; j < size; j++) {
+   for (int i = 0; i < size; i++) {
+      for (int j = 0; j < size; j++) {
          if (t[i][j] == Smoldering || t[i][j] == Burning) {
-            #pragma omp critical
-            isBurningOrSmoldering = true;
+            return true;
          }
       }
    }
-   return isBurningOrSmoldering;
+   return false;
 }
 
 bool

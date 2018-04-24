@@ -9,7 +9,6 @@
 #include <iostream>
 #include "Random.h"
 #include "Forest.h"
-#include <omp.h>
 #include <sys/time.h>
 
 
@@ -67,26 +66,20 @@ main(int argc, char* argv[])
    checkCommandLine(argc, argv, forest_size, n_trials, n_probs, n_threads, chunk);
     
    try {
-
+      Forest* forest = new Forest(forest_size, n_threads);;
       Random rand;
-
       prob_spread = new double[n_probs];
       percent_burned = new double[n_probs];
 
       prob_step = (prob_max - prob_min)/(double)(n_probs-1);
      
-      Forest* forest;
+      
       int ip, it;
 
       start_time = wtime();
       printf("Probabilidade, Percentual Queimado\n");
 
-      // para cada probabilidade, calcula o percentual de �rvores queimadas
-      omp_set_num_threads(n_threads);
-      #pragma omp parallel shared(prob_spread, percent_burned) private(forest, ip, it)
-      {    
-      forest = new Forest(forest_size);
-      #pragma omp for schedule(static, chunk)
+      // para cada probabilidade, calcula o percentual de �rvores queimadas 
       for (ip = 0; ip < n_probs; ip++) {
 
          prob_spread[ip] = prob_min + (double) ip * prob_step;
@@ -107,7 +100,6 @@ main(int argc, char* argv[])
 
          // mostra resultado para esta probabilidade
          printf("%lf, %lf\n", prob_spread[ip], percent_burned[ip]);
-      }
       }
       end_time = wtime();
       printf("%d thread(s), %ld usec\n", n_threads, (long) (end_time - start_time));

@@ -4,13 +4,13 @@
 #include "Random.h"
 
 //
-// Classe que representa uma floresta incendiável.
+// Classe que representa uma floresta incendiï¿½vel.
 //
 class Forest
 {
    public:
 
-      Forest(int s);
+      Forest(int s, int nthreads);
       ~Forest();
 
       struct TreePosn
@@ -33,18 +33,19 @@ class Forest
 
    private:
 
-      // A floresta é armazenada em uma matriz.
-      // Cada elemento é uma árvore que pode estar em 4 estados.
+      // A floresta ï¿½ armazenada em uma matriz.
+      // Cada elemento ï¿½ uma ï¿½rvore que pode estar em 4 estados.
 
       enum Tree {
-         Unburnt,       // árvore não queimada 
-         Smoldering,    // árvore começando a pegar fogo
-         Burning,       // árvore queimando
-         Burnt          // árvore completamente queimada
+         Unburnt,       // ï¿½rvore nï¿½o queimada 
+         Smoldering,    // ï¿½rvore comeï¿½ando a pegar fogo
+         Burning,       // ï¿½rvore queimando
+         Burnt          // ï¿½rvore completamente queimada
       };        
 
       Tree** t; 
       int size;
+      int nthreads;
 
 };
 

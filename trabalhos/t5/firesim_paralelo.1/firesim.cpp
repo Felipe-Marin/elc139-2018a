@@ -81,30 +81,26 @@ main(int argc, char* argv[])
       start_time = wtime();
       printf("Probabilidade, Percentual Queimado\n");
 
-      // para cada probabilidade, calcula o percentual de �rvores queimadas
       omp_set_num_threads(n_threads);
+
+      //paraleliza o laço de probabilidades
+      #pragma omp parallel shared(prob_spread, percent_burned) private(forest, ip, it)
       {    
       forest = new Forest(forest_size);
+      // para cada probabilidade, calcula o percentual de árvores queimadas
+      #pragma omp for schedule(dynamic, chunk)
       for (ip = 0; ip < n_probs; ip++) {
-
          prob_spread[ip] = prob_min + (double) ip * prob_step;
          percent_burned[ip] = 0.0;
-         rand.setSeed(base_seed+ip); // nova seq��ncia de n�meros aleat�rios
-         
-        
-         // executa v�rios experimentos  
-         #pragma omp for schedule(static) private(it)
-         for (it = 0; it < n_trials; it++) {
-           
-            // queima floresta at� o fogo apagar
+         rand.setSeed(base_seed+ip); // nova sequência de números aleatórios
+         // executa vários experimentos  
+         for (it = 0; it < n_trials; it++) {           
+            // queima floresta até o fogo apagar
             forest->burnUntilOut(forest->centralTree(), prob_spread[ip], rand);
-            #pragma omp critical
             percent_burned[ip] += forest->getPercentBurned();
          }
-
-         // calcula m�dia dos percentuais de �rvores queimadas
+         // calcula m�dia dos percentuais de árvores queimadas
          percent_burned[ip] /= n_trials;
-
          // mostra resultado para esta probabilidade
          printf("%lf, %lf\n", prob_spread[ip], percent_burned[ip]);
       }
