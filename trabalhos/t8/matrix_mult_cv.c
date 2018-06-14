@@ -38,14 +38,11 @@ int main(int argc, char *argv[])
   MPI_Comm_rank(MPI_COMM_WORLD, &myrank); /* who am i */
   MPI_Comm_size(MPI_COMM_WORLD, &nproc); /* number of processors */
 
-  if (SIZE%nproc!=0) {
+  /*if (SIZE%nproc!=0) {
     if (myrank==0) printf("Matrix size not divisible by number of processors\n");
     MPI_Finalize();
     return -1;
-  }
-
-  from = myrank * SIZE/nproc;
-  to = (myrank+1) * SIZE/nproc;
+  }*/
 
   /* Process 0 fills the input matrices and broadcasts them to the rest */
   /* (actually, only the relevant stripe of A is sent to each process) */
@@ -55,22 +52,39 @@ int main(int argc, char *argv[])
     fill_matrix(B);
   }
 
-  int *displs, *scounts;
+  int displs[nproc];
+  int scounts[nproc];
+  int offset = 0;
+  int div_value = SIZE / nproc;
+  int remainder_value = SIZE % nproc;
+  for(i=0; i<nproc; i++){
+    scounts[i] = div_value * SIZE;
+    if(i < remainder_value){
+      scounts[i] += SIZE;
+    }
+    displs[i] = offset;
+    offset += scounts[i];
+  }
+
+  int recvbuf[scounts[myrank]/SIZE][SIZE];
 
   MPI_Bcast(B, SIZE*SIZE, MPI_INT, 0, MPI_COMM_WORLD);
-  MPI_Scatterv(A, SIZE*SIZE/nproc, MPI_INT, A, SIZE*SIZE/nproc, MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Scatterv(A, scounts, displs, MPI_INT, recvbuf, scounts[myrank], MPI_INT, 0, MPI_COMM_WORLD);
+
+  from = displs[myrank] / SIZE;
+  to = from + scounts[myrank] / SIZE;
 
   printf("computing slice %d (from row %d to %d)\n", myrank, from, to-1);
   for (i=from, h=0; i<to; i++, h++) {
     for (j=0; j<SIZE; j++) {
       C[i][j]=0;
       for (k=0; k<SIZE; k++){
-        C[i][j] += A[h][k]*B[k][j];
+        C[i][j] += recvbuf[h][k]*B[k][j];
       }
     }
   }
 
-  MPI_Gather (C[from], SIZE*SIZE/nproc, MPI_INT, C, SIZE*SIZE/nproc, MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Gatherv(C[from], scounts[myrank], MPI_INT, C, scounts, displs, MPI_INT, 0, MPI_COMM_WORLD);
 
   if (myrank==0) {
     printf("\n\n");
