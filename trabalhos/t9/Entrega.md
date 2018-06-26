@@ -6,7 +6,7 @@ Nome: Felipe Marin
 
 ## Código
 
-Maldelbrot Paralelo: [mandelbrot_p.c](./mandelbrot_paralelo/mandelbrot_p.c)
+Maldelbrot Paralelo: [mandelbrot_p.c](./mandelbrot_paralelo/mandelbrot_p.cpp)
 
 ## Slides
 
