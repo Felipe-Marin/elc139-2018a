@@ -8,9 +8,7 @@ int main(int argc, char *argv[]){
 	int n_rows, start_row, last_row, max_row, max_column, max_n;
 	int myrank, nproc, i;
 	int args[3];
-	//cin >> max_row;
-	//cin >> max_column;
-	//cin >> max_n;
+	double start_time, end_time;
 
 	MPI_Init(&argc, &argv);
  	MPI_Comm_rank(MPI_COMM_WORLD, &myrank); /* who am i */
@@ -21,6 +19,9 @@ int main(int argc, char *argv[]){
 		cin >> args[1];
 		cin >> args[2];
 	}
+
+	start_time = MPI_Wtime();
+
 	MPI_Bcast(args, 3, MPI_INT, 0, MPI_COMM_WORLD);
 	max_row = args[0];
 	n_rows = max_row / nproc;
@@ -61,12 +62,15 @@ int main(int argc, char *argv[]){
 
 	MPI_Gatherv(mat[start_row], scounts[myrank], MPI_CHAR, mat, scounts, displs, MPI_CHAR, 0, MPI_COMM_WORLD);
 
+	end_time = MPI_Wtime();
+
 	if(myrank == 0){
 		for(int r = 0; r < max_row; ++r){
 			for(int c = 0; c < max_column; ++c)
 				std::cout << mat[r][c];
 			cout << '\n';
 		}	
+		printf("Tempo de execução: %f sec\n", end_time-start_time);
 	}
 
 	MPI_Finalize();
