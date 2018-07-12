@@ -4,6 +4,7 @@
 import pandas as pd
 import numpy as np
 import random
+import time
 
 def initCentroids(matrix, n_clusters):
     centroids = []
@@ -24,9 +25,8 @@ def getLabels(matrix, centroids):
     return np.array(labels)
 
 def getCentroids(matrix, centroids, labels):
-    for centroid in centroids:
-        centroid = [0] * centroid.shape[0]
-    centroidsCount = [0] * centroids.shape[0]
+    centroids = np.zeros(centroids.shape)
+    centroidsCount = np.zeros(centroids.shape[0])
     for i in range(0, matrix.shape[0]):
         centroids[labels[i]] = np.add(centroids[labels[i]], matrix[i])
         centroidsCount[labels[i]] += 1
@@ -43,21 +43,25 @@ def kmeans(matrix, k, maxIterations):
         labels = getLabels(matrix, centroids)
         centroids = getCentroids(matrix, centroids, labels)
         iterations += 1
+    print(iterations)
     return labels
 
 #número de clusters
 k = 2
 #máximo de iterações
-maxIterations = 300
-#arquivo csv com os dados
-input = pd.read_csv('datasets/Watch_gyroscope.csv')
+maxIterations = 5
 #colunas do arquivo a serem usadas no kmeans
 columns = ['x', 'y', 'z']
+#arquivo csv com os dados
+input = pd.read_csv('datasets/Watch_gyroscope.csv', usecols=columns)
 #nome do arquivo de saida
 output = 'kmeans.csv'
 
-X = input.as_matrix(columns)
+X = input.values
+start_time = time.perf_counter()
 labels = kmeans(X, k, maxIterations)
+end_time = time.perf_counter()
+print("Kmeans time:" + str(end_time-start_time))
 df = pd.DataFrame(data=X, columns=columns)
 df['labels'] = labels
 df.to_csv(output)
