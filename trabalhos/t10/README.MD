@@ -2,7 +2,7 @@
 
 ## Códigos
 Kmeans Sequencial: [kmeans.py](./kmeans.py)  
-Kmeans Scikit-learn: [kmeans_skl.py](./kmeans_skl.py)
+Kmeans Scikit-learn: [kmeans_skl.py](./kmeans_skl.py)  
 Kmeans Cuda: [kmeans_cuda.py](./kmeans_cuda.py)
 
 ## Resultados
